@@ -1,7 +1,10 @@
-import { copyFileSync, mkdirSync } from "node:fs";
+import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
+
+const licenseHeader = `// Copyright (c) 2026 David Walker\n// Licensed under the MIT License.\n\n`;
 
 mkdirSync("wwwroot", { recursive: true });
-copyFileSync("src/blazer-markdown-editor.css", "wwwroot/blazer-markdown-editor.css");
+const cssContent = readFileSync("src/blazer-markdown-editor.css", "utf8");
+writeFileSync("wwwroot/blazer-markdown-editor.css", `${licenseHeader}${cssContent}`);
 
 let build;
 try {
@@ -17,6 +20,9 @@ const shared = {
   bundle: true,
   format: "iife",
   target: ["es2020"],
+  banner: {
+    js: licenseHeader,
+  },
 };
 
 await Promise.all([

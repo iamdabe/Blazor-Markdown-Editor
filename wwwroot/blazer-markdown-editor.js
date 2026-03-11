@@ -1,3 +1,6 @@
+// Copyright (c) 2026 David Walker
+// Licensed under the MIT License.
+
 (() => {
   var __defProp = Object.defineProperty;
   var __export = (target, all) => {
