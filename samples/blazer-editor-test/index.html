@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Blazer Markdown Editor Sample</title>
+  <link rel="stylesheet" href="../../wwwroot/blazer-markdown-editor.css">
+  <style>
+    :root {
+      --bg: #f4f7f9;
+      --panel: #ffffff;
+      --ink: #102027;
+      --muted: #4f636d;
+      --line: #cfd8dc;
+      --accent: #00695c;
+      --accent-ink: #ffffff;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Segoe UI", "Noto Sans", "Helvetica Neue", sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 15% 15%, rgba(0, 105, 92, 0.16), transparent 34%),
+        radial-gradient(circle at 85% 30%, rgba(2, 119, 189, 0.12), transparent 36%),
+        var(--bg);
+      padding: 28px 14px;
+    }
+
+    .shell {
+      width: min(980px, 100%);
+      margin: 0 auto;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 20px;
+      box-shadow: 0 10px 28px rgba(16, 32, 39, 0.08);
+    }
+
+    h1 {
+      margin: 0 0 6px;
+      font-size: clamp(1.3rem, 2.8vw, 1.8rem);
+      letter-spacing: 0.02em;
+    }
+
+    .subtitle {
+      margin: 0 0 14px;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    button {
+      border: 1px solid var(--line);
+      background: #fff;
+      color: var(--ink);
+      border-radius: 9px;
+      padding: 8px 12px;
+      font-size: 0.9rem;
+      cursor: pointer;
+    }
+
+    button.primary {
+      background: var(--accent);
+      color: var(--accent-ink);
+      border-color: var(--accent);
+    }
+
+    .panel {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 12px;
+      background: #fff;
+    }
+
+    #editor {
+      min-height: 300px;
+    }
+
+    #markdownView {
+      width: 100%;
+      min-height: 320px;
+      resize: vertical;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 10px;
+      display: none;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 0.88rem;
+      line-height: 1.5;
+    }
+
+    .status {
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 0.86rem;
+    }
+
+    @media (max-width: 700px) {
+      .shell { padding: 14px; }
+      .toolbar { gap: 6px; }
+      button { width: calc(50% - 3px); }
+      button.primary { width: 100%; order: -1; }
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <h1>Blazer Markdown Editor Test</h1>
+    <p class="subtitle">This sample uses the bundled build outputs from the repository wwwroot folder.</p>
+
+    <div class="toolbar">
+      <button id="btnLive" class="primary">Live Mode</button>
+      <button id="btnCode">Code Mode</button>
+      <button id="btnCopy">Copy Markdown</button>
+      <button id="btnReset">Reset Content</button>
+    </div>
+
+    <div class="panel">
+      <div id="editor"></div>
+      <textarea id="markdownView" spellcheck="false"></textarea>
+    </div>
+
+    <p id="status" class="status">Ready.</p>
+  </main>
+
+  <script src="../../wwwroot/blazer-markdown-editor.js"></script>
+  <script>
+    const initialMarkdown = `# Sample Test Page
+
+This page exercises the built **Blazer Markdown Editor** bundle from the repository.
+
+## What to test
+
+- Basic markdown editing
+- Table conversion using a separator row
+- Markdown import/export from Code mode
+
+| Feature | Expected |
+| --- | --- |
+| Bold | Works with keyboard input |
+| Table | Converts from markdown rows |
+`;
+
+    const statusEl = document.getElementById("status");
+    const editorHost = document.getElementById("editor");
+    const markdownView = document.getElementById("markdownView");
+
+    const editorId = window.blazerMarkdownEditor.create(editorHost, {
+      markdown: initialMarkdown,
+    });
+
+    let mode = "live";
+
+    function setStatus(text) {
+      statusEl.textContent = text;
+    }
+
+    function switchToCodeMode() {
+      if (mode === "code") return;
+      markdownView.value = window.blazerMarkdownEditor.getMarkdown(editorId);
+      editorHost.style.display = "none";
+      markdownView.style.display = "block";
+      markdownView.focus();
+      mode = "code";
+      setStatus("Code mode enabled.");
+    }
+
+    function switchToLiveMode() {
+      if (mode === "live") return;
+      window.blazerMarkdownEditor.setMarkdown(editorId, markdownView.value);
+      markdownView.style.display = "none";
+      editorHost.style.display = "block";
+      window.blazerMarkdownEditor.focus(editorId);
+      mode = "live";
+      setStatus("Live mode enabled.");
+    }
+
+    async function copyMarkdown() {
+      const text = mode === "live"
+        ? window.blazerMarkdownEditor.getMarkdown(editorId)
+        : markdownView.value;
+
+      try {
+        await navigator.clipboard.writeText(text);
+        setStatus("Markdown copied to clipboard.");
+      } catch {
+        setStatus("Clipboard unavailable. Open devtools and copy from Code mode.");
+      }
+    }
+
+    function resetContent() {
+      window.blazerMarkdownEditor.setMarkdown(editorId, initialMarkdown);
+      if (mode === "code") {
+        markdownView.value = initialMarkdown;
+      }
+      setStatus("Sample content restored.");
+    }
+
+    document.getElementById("btnLive").addEventListener("click", switchToLiveMode);
+    document.getElementById("btnCode").addEventListener("click", switchToCodeMode);
+    document.getElementById("btnCopy").addEventListener("click", copyMarkdown);
+    document.getElementById("btnReset").addEventListener("click", resetContent);
+
+    window.addEventListener("beforeunload", () => {
+      window.blazerMarkdownEditor.destroy(editorId);
+    });
+  </script>
+</body>
+</html>
