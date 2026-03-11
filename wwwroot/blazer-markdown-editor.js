@@ -1,5 +1,5 @@
-// Copyright (c) 2026 David Walker
-// Licensed under the MIT License.
+/* Copyright (c) 2026 David Walker
+   Licensed under the MIT License. */
 
 
 (() => {
