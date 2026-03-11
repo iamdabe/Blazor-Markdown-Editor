@@ -159,7 +159,6 @@
     "prosemirror-keymap":         "https://esm.sh/*prosemirror-keymap@1.2.2",
     "prosemirror-history":        "https://esm.sh/*prosemirror-history@1.4.1",
     "prosemirror-commands":       "https://esm.sh/*prosemirror-commands@1.6.2",
-    "prosemirror-schema-basic":   "https://esm.sh/*prosemirror-schema-basic@1.2.3",
     "prosemirror-schema-list":    "https://esm.sh/*prosemirror-schema-list@1.5.1",
     "prosemirror-inputrules":     "https://esm.sh/*prosemirror-inputrules@1.4.0",
     "prosemirror-dropcursor":     "https://esm.sh/*prosemirror-dropcursor@1.8.1",
@@ -182,6 +181,7 @@
   }
 }
 </script>
+
 </head>
 <body>
 
@@ -436,6 +436,8 @@ function tableInputRulePlugin() {
         return false; // We'll handle this in handleKeyDown for Enter
       },
       handleKeyDown(view, event) {
+        // Support Enter and Ctrl/Cmd+Enter for table conversion.
+        // Some workflows use Ctrl+Enter as an explicit "apply" action.
         if (event.key !== "Enter") return false;
 
         const { state } = view;
@@ -521,6 +523,7 @@ function tableInputRulePlugin() {
 
         const tr = state.tr.replaceWith(hStart, sepEnd, table);
         view.dispatch(tr);
+        event.preventDefault();
         return true;
       }
     }
@@ -892,6 +895,8 @@ function buildBlockInputRules(schema) {
 
 const plugins = [
   slashMenuPlugin(),   // MUST be first — its Enter handler needs priority when menu is open
+  // Must run before baseKeymap Enter (splitBlock), otherwise table conversion never triggers.
+  tableInputRulePlugin(),
   history(),
   dropCursor(),
   gapCursor(),
@@ -905,7 +910,6 @@ const plugins = [
   buildBlockInputRules(mySchema),
   inlineMarkdownRules,
   codeBlockEscapeKeymap(),
-  tableInputRulePlugin(),
   columnResizing(),
   tableEditing(),
   keymap({ "Tab": goToNextCell(1), "Shift-Tab": goToNextCell(-1) }),
