@@ -31813,52 +31813,87 @@
     return inputRules({ rules });
   }
   function tableInputRulePlugin() {
+    function parseHeaderCells(text2) {
+      if (!text2.match(/^\s*\|.+\|\s*$/)) return null;
+      const cells = text2.replace(/^\s*\|/, "").replace(/\|\s*$/, "").split("|").map((cell) => cell.trim());
+      return cells.length >= 2 ? cells : null;
+    }
+    function parseSeparatorCells(text2) {
+      if (!text2.match(/^\s*\|[\s:]*-{3,}[\s:]*(?:\|[\s:]*-{3,}[\s:]*)+\|?\s*$/)) return null;
+      const cells = text2.replace(/^\s*\|/, "").replace(/\|\s*$/, "").split("|").map((cell) => cell.trim());
+      if (!cells.every((cell) => /^:?-{3,}:?$/.test(cell))) return null;
+      return cells;
+    }
+    function getAlignments(separatorCells) {
+      return separatorCells.map((cell) => {
+        const left = cell.startsWith(":");
+        const right = cell.endsWith(":");
+        if (left && right) return "center";
+        if (right) return "right";
+        return null;
+      });
+    }
+    function buildTableNode(headerCells, aligns) {
+      const headerRow = schema2.nodes.table_row.create(
+        null,
+        headerCells.map(
+          (text2, i) => schema2.nodes.table_header.create(
+            { alignment: aligns[i] || null },
+            text2 ? [schema2.node("paragraph", null, [schema2.text(text2)])] : [schema2.node("paragraph")]
+          )
+        )
+      );
+      const emptyRow = schema2.nodes.table_row.create(
+        null,
+        headerCells.map((_, i) => schema2.nodes.table_cell.create({ alignment: aligns[i] || null }, [schema2.node("paragraph")]))
+      );
+      return schema2.nodes.table.create(null, [headerRow, emptyRow]);
+    }
+    function findTableMarkdownRange(state) {
+      const { $head } = state.selection;
+      const paragraph = $head.parent;
+      if (paragraph.type.name !== "paragraph") return null;
+      const paragraphDepth = $head.depth;
+      const paragraphFrom = $head.before(paragraphDepth);
+      const paragraphTo = $head.after(paragraphDepth);
+      const text2 = paragraph.textContent;
+      const lines = text2.split("\n");
+      if (lines.length === 2) {
+        const headerCells = parseHeaderCells(lines[0]);
+        const separatorCells = parseSeparatorCells(lines[1]);
+        if (!headerCells || !separatorCells || separatorCells.length !== headerCells.length) return null;
+        return {
+          from: paragraphFrom,
+          to: paragraphTo,
+          headerCells,
+          aligns: getAlignments(separatorCells)
+        };
+      }
+      const containerDepth = paragraphDepth - 1;
+      const container = $head.node(containerDepth);
+      const paragraphIndex = $head.index(containerDepth);
+      if (paragraphIndex === 0) return null;
+      const headerBlock = container.child(paragraphIndex - 1);
+      if (headerBlock.type.name !== "paragraph") return null;
+      const headerCells = parseHeaderCells(headerBlock.textContent);
+      const separatorCells = parseSeparatorCells(text2);
+      if (!headerCells || !separatorCells || separatorCells.length !== headerCells.length) return null;
+      return {
+        from: paragraphFrom - headerBlock.nodeSize,
+        to: paragraphTo,
+        headerCells,
+        aligns: getAlignments(separatorCells)
+      };
+    }
     return new Plugin({
       props: {
         handleKeyDown(view, event) {
           if (event.key !== "Enter") return false;
           const { state } = view;
-          const { $head } = state.selection;
-          const parentNode3 = $head.parent;
-          if (parentNode3.type.name !== "paragraph") return false;
-          const currentLine = parentNode3.textContent;
-          if (!currentLine.match(/^\s*\|[\s:]*-{3,}[\s:]*(?:\|[\s:]*-{3,}[\s:]*)+\|?\s*$/)) return false;
-          const grandParent = $head.node($head.depth - 1);
-          const myIndex = $head.index($head.depth - 1);
-          if (myIndex === 0) return false;
-          const headerBlock = grandParent.child(myIndex - 1);
-          if (headerBlock.type.name !== "paragraph") return false;
-          const headerText = headerBlock.textContent;
-          if (!headerText.match(/^\s*\|.+\|/)) return false;
-          const headerCells = headerText.replace(/^\s*\|/, "").replace(/\|\s*$/, "").split("|").map((c) => c.trim());
-          const sepCells = currentLine.replace(/^\s*\|/, "").replace(/\|\s*$/, "").split("|").map((c) => c.trim());
-          if (headerCells.length < 2 || sepCells.length !== headerCells.length) return false;
-          const aligns = sepCells.map((s) => {
-            const left = s.startsWith(":");
-            const right = s.endsWith(":");
-            if (left && right) return "center";
-            if (right) return "right";
-            return null;
-          });
-          const headerRow = schema2.nodes.table_row.create(
-            null,
-            headerCells.map(
-              (text2, i) => schema2.nodes.table_header.create(
-                { alignment: aligns[i] || null },
-                text2 ? [schema2.node("paragraph", null, [schema2.text(text2)])] : [schema2.node("paragraph")]
-              )
-            )
-          );
-          const emptyRow = schema2.nodes.table_row.create(
-            null,
-            headerCells.map((_, i) => schema2.nodes.table_cell.create({ alignment: aligns[i] || null }, [schema2.node("paragraph")]))
-          );
-          const table2 = schema2.nodes.table.create(null, [headerRow, emptyRow]);
-          let pos = $head.before($head.depth - 1);
-          for (let i = 0; i < myIndex - 1; i++) pos += grandParent.child(i).nodeSize;
-          const hStart = pos;
-          const sepEnd = hStart + headerBlock.nodeSize + parentNode3.nodeSize;
-          const tr = state.tr.replaceWith(hStart, sepEnd, table2);
+          const tableRange = findTableMarkdownRange(state);
+          if (!tableRange) return false;
+          const table2 = buildTableNode(tableRange.headerCells, tableRange.aligns);
+          const tr = state.tr.replaceWith(tableRange.from, tableRange.to, table2);
           view.dispatch(tr);
           event.preventDefault();
           return true;
@@ -32208,6 +32243,16 @@
       }
     });
   }
+  function compactLineBreakKeymap() {
+    return keymap({
+      "Mod-Enter": (state, dispatch) => {
+        const { $head } = state.selection;
+        if ($head.parent.type.name !== "paragraph") return false;
+        if (dispatch) dispatch(state.tr.insertText("\n"));
+        return true;
+      }
+    });
+  }
   function createPlugins() {
     return [
       slashMenuPlugin(),
@@ -32224,6 +32269,7 @@
       keymap(baseKeymap),
       buildBlockInputRules(),
       inlineMarkdownRules,
+      compactLineBreakKeymap(),
       codeBlockEscapeKeymap(),
       columnResizing(),
       tableEditing(),
