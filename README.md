@@ -1,9 +1,9 @@
-# Blazer Markdown Editor
+# Blazor Markdown Editor
 A lightweight (<550kb) ProseMirror-based javascript Markdown editor with slash commands, table editing, and JSInterop-friendly APIs. Developed as I needed a WYSIWYG markdown editor for Blazor but all I could find was react and vue components. Can be used standalone or authored into component for Blazor.
 
 [![Built with Claude](https://img.shields.io/badge/Built%20with-Claude%20AI-5A67D8)](https://claude.ai)
 
-Just want to see it in action: Check the demo [https://iamdabe.github.io/Blazer-Markdown-Editor/](https://iamdabe.github.io/Blazer-Markdown-Editor/) on github pages.
+Just want to see it in action: Check the demo [https://iamdabe.github.io/Blazor-Markdown-Editor/](https://iamdabe.github.io/Blazor-Markdown-Editor/) on github pages.
 
 ## Contents
 - **[Features](#features)**
@@ -40,15 +40,15 @@ Additional docs:
 2. Build distributable assets:
    - `npm run build`
 3. Include generated assets from `wwwroot` in your Blazor app:
-   - `blazer-markdown-editor.css`
-   - `blazer-markdown-editor.js`
-   - `blazer-markdown-editor.min.js`
+   - `blazor-markdown-editor.css`
+   - `blazor-markdown-editor.js`
+   - `blazor-markdown-editor.min.js`
 4. Call the global API via JSInterop:
-   - `window.blazerMarkdownEditor.create(...)`
-   - `window.blazerMarkdownEditor.setMarkdown(...)`
-   - `window.blazerMarkdownEditor.getMarkdown(...)`
-   - `window.blazerMarkdownEditor.focus(...)`
-   - `window.blazerMarkdownEditor.destroy(...)`
+   - `window.blazorMarkdownEditor.create(...)`
+   - `window.blazorMarkdownEditor.setMarkdown(...)`
+   - `window.blazorMarkdownEditor.getMarkdown(...)`
+   - `window.blazorMarkdownEditor.focus(...)`
+   - `window.blazorMarkdownEditor.destroy(...)`
 
 Versioning uses a calendar schema: `YYYY.MINOR.PATCH` (current: `2026.2.1`).
 
