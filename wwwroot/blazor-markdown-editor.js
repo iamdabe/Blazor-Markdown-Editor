@@ -31664,7 +31664,7 @@
     };
   }
 
-  // src/blazer-markdown-editor.js
+  // src/blazor-markdown-editor.js
   var tNodes = tableNodes({
     tableGroup: "block",
     cellContent: "block+",
@@ -32501,7 +32501,7 @@
   }
   function create(target, options = {}) {
     const el = resolveTarget(target);
-    if (!el) throw new Error("blazerMarkdownEditor.create: target element not found");
+    if (!el) throw new Error("blazorMarkdownEditor.create: target element not found");
     const doc5 = parseMarkdown(options.markdown || "");
     const view = new EditorView(el, {
       state: EditorState.create({ doc: doc5, plugins: createPlugins() })
@@ -32512,7 +32512,7 @@
   }
   function getEditor(id) {
     const editor = editors.get(String(id));
-    if (!editor) throw new Error(`blazerMarkdownEditor: unknown editor id '${id}'`);
+    if (!editor) throw new Error(`blazorMarkdownEditor: unknown editor id '${id}'`);
     return editor;
   }
   function setMarkdown(id, markdown) {
@@ -32533,7 +32533,7 @@
     editor.view.destroy();
     editors.delete(key);
   }
-  var blazerMarkdownEditor = { create, setMarkdown, getMarkdown, focus, destroy };
-  window.blazerMarkdownEditor = blazerMarkdownEditor;
+  var blazorMarkdownEditor = { create, setMarkdown, getMarkdown, focus, destroy };
+  window.blazorMarkdownEditor = blazorMarkdownEditor;
 })();
-//# sourceMappingURL=blazer-markdown-editor.js.map
+//# sourceMappingURL=blazor-markdown-editor.js.map

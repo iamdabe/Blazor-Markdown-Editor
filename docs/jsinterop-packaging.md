@@ -1,4 +1,4 @@
-# Blazer Markdown Editor: JSInterop Packaging
+# Blazor Markdown Editor: JSInterop Packaging
 
 This repo is optimized for Blazor/MudBlazor usage by shipping static assets from `wwwroot`.
 
@@ -7,9 +7,9 @@ This repo is optimized for Blazor/MudBlazor usage by shipping static assets from
 1. Author source in `src/`.
 2. Build distributables with `npm run build`.
 3. Ship only `wwwroot` artifacts in releases:
-   - `wwwroot/blazer-markdown-editor.js`
-   - `wwwroot/blazer-markdown-editor.min.js`
-   - `wwwroot/blazer-markdown-editor.css`
+   - `wwwroot/blazor-markdown-editor.js`
+   - `wwwroot/blazor-markdown-editor.min.js`
+   - `wwwroot/blazor-markdown-editor.css`
 
 ## Build
 
@@ -32,21 +32,21 @@ This project uses calendar versioning:
 Include static assets:
 
 ```html
-<link rel="stylesheet" href="_content/<YourPackageOrProject>/blazer-markdown-editor.css" />
-<script src="_content/<YourPackageOrProject>/blazer-markdown-editor.js"></script>
+<link rel="stylesheet" href="_content/<YourPackageOrProject>/blazor-markdown-editor.css" />
+<script src="_content/<YourPackageOrProject>/blazor-markdown-editor.js"></script>
 ```
 
 JSInterop API:
 
-- `window.blazerMarkdownEditor.create(target, { markdown })`
-- `window.blazerMarkdownEditor.setMarkdown(editorId, markdown)`
-- `window.blazerMarkdownEditor.getMarkdown(editorId)`
-- `window.blazerMarkdownEditor.focus(editorId)`
-- `window.blazerMarkdownEditor.destroy(editorId)`
+- `window.blazorMarkdownEditor.create(target, { markdown })`
+- `window.blazorMarkdownEditor.setMarkdown(editorId, markdown)`
+- `window.blazorMarkdownEditor.getMarkdown(editorId)`
+- `window.blazorMarkdownEditor.focus(editorId)`
+- `window.blazorMarkdownEditor.destroy(editorId)`
 
 
 Required assets:
 
-- `wwwroot/blazer-markdown-editor.js`
-- `wwwroot/blazer-markdown-editor.min.js`
-- `wwwroot/blazer-markdown-editor.css`
+- `wwwroot/blazor-markdown-editor.js`
+- `wwwroot/blazor-markdown-editor.min.js`
+- `wwwroot/blazor-markdown-editor.css`

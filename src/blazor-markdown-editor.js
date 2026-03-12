@@ -802,7 +802,7 @@ function resolveTarget(target) {
 
 function create(target, options = {}) {
   const el = resolveTarget(target);
-  if (!el) throw new Error("blazerMarkdownEditor.create: target element not found");
+  if (!el) throw new Error("blazorMarkdownEditor.create: target element not found");
 
   const doc = parseMarkdown(options.markdown || "");
   const view = new EditorView(el, {
@@ -816,7 +816,7 @@ function create(target, options = {}) {
 
 function getEditor(id) {
   const editor = editors.get(String(id));
-  if (!editor) throw new Error(`blazerMarkdownEditor: unknown editor id '${id}'`);
+  if (!editor) throw new Error(`blazorMarkdownEditor: unknown editor id '${id}'`);
   return editor;
 }
 
@@ -842,5 +842,5 @@ function destroy(id) {
   editors.delete(key);
 }
 
-export const blazerMarkdownEditor = { create, setMarkdown, getMarkdown, focus, destroy };
-window.blazerMarkdownEditor = blazerMarkdownEditor;
+export const blazorMarkdownEditor = { create, setMarkdown, getMarkdown, focus, destroy };
+window.blazorMarkdownEditor = blazorMarkdownEditor;

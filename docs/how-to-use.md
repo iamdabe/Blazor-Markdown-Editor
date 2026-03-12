@@ -1,4 +1,4 @@
-# How to Use Blazer Markdown Editor
+# How to Use Blazor Markdown Editor
 
 ## Build
 ```bash
@@ -10,18 +10,18 @@ npm run build
 Add built assets to your host page or static web assets pipeline:
 
 ```html
-<link rel="stylesheet" href="_content/<YourPackageOrProject>/blazer-markdown-editor.css" />
-<script src="_content/<YourPackageOrProject>/blazer-markdown-editor.js"></script>
+<link rel="stylesheet" href="_content/<YourPackageOrProject>/blazor-markdown-editor.css" />
+<script src="_content/<YourPackageOrProject>/blazor-markdown-editor.js"></script>
 ```
 
 ## JSInterop API
 Use the global object:
 
-- `window.blazerMarkdownEditor.create(target, { markdown })` → `editorId`
-- `window.blazerMarkdownEditor.setMarkdown(editorId, markdown)`
-- `window.blazerMarkdownEditor.getMarkdown(editorId)`
-- `window.blazerMarkdownEditor.focus(editorId)`
-- `window.blazerMarkdownEditor.destroy(editorId)`
+- `window.blazorMarkdownEditor.create(target, { markdown })` → `editorId`
+- `window.blazorMarkdownEditor.setMarkdown(editorId, markdown)`
+- `window.blazorMarkdownEditor.getMarkdown(editorId)`
+- `window.blazorMarkdownEditor.focus(editorId)`
+- `window.blazorMarkdownEditor.destroy(editorId)`
 
 ## Typical lifecycle (Blazor)
 1. On first render, call `create` with the target element.

@@ -3,8 +3,8 @@ import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 const licenseHeader = `/* Copyright (c) 2026 David Walker\n   Licensed under the MIT License. */\n\n`;
 
 mkdirSync("wwwroot", { recursive: true });
-const cssContent = readFileSync("src/blazer-markdown-editor.css", "utf8");
-writeFileSync("wwwroot/blazer-markdown-editor.css", `${licenseHeader}${cssContent}`);
+const cssContent = readFileSync("src/blazor-markdown-editor.css", "utf8");
+writeFileSync("wwwroot/blazor-markdown-editor.css", `${licenseHeader}${cssContent}`);
 
 let build;
 try {
@@ -16,7 +16,7 @@ try {
 }
 
 const shared = {
-  entryPoints: ["src/blazer-markdown-editor.js"],
+  entryPoints: ["src/blazor-markdown-editor.js"],
   bundle: true,
   format: "iife",
   target: ["es2020"],
@@ -30,12 +30,12 @@ await Promise.all([
     ...shared,
     sourcemap: true,
     minify: false,
-    outfile: "wwwroot/blazer-markdown-editor.js",
+    outfile: "wwwroot/blazor-markdown-editor.js",
   }),
   build({
     ...shared,
     sourcemap: true,
     minify: true,
-    outfile: "wwwroot/blazer-markdown-editor.min.js",
+    outfile: "wwwroot/blazor-markdown-editor.min.js",
   }),
 ]);

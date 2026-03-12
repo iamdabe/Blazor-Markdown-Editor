@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Blazer Markdown Editor Sample</title>
-  <link rel="stylesheet" href="../../wwwroot/blazer-markdown-editor.css">
+  <title>Blazor Markdown Editor Sample</title>
+  <link rel="stylesheet" href="../../wwwroot/blazor-markdown-editor.css">
   <style>
     :root {
       --bg: #f4f7f9;
@@ -156,7 +156,7 @@
 </head>
 <body>
   <main class="shell">
-    <h1>Blazer Markdown Editor Test</h1>
+    <h1>Blazor Markdown Editor Test</h1>
     <p class="subtitle">This sample uses the bundled build outputs from the repository wwwroot folder.</p>
 
     <div class="toolbar">
@@ -180,7 +180,7 @@
     </p>
   </main>
 
-  <script src="../../wwwroot/blazer-markdown-editor.js"></script>
+  <script src="../../wwwroot/blazor-markdown-editor.js"></script>
   <script>
     const initialMarkdown = `# Markdown Editor
 
@@ -240,7 +240,7 @@ Type \`/\` at the start of a line to open the **slash command menu**!
     const editorHost = document.getElementById("editor");
     const markdownView = document.getElementById("markdownView");
 
-    const editorId = window.blazerMarkdownEditor.create(editorHost, {
+    const editorId = window.blazorMarkdownEditor.create(editorHost, {
       markdown: initialMarkdown,
     });
 
@@ -252,7 +252,7 @@ Type \`/\` at the start of a line to open the **slash command menu**!
 
     function switchToCodeMode() {
       if (mode === "code") return;
-      markdownView.value = window.blazerMarkdownEditor.getMarkdown(editorId);
+      markdownView.value = window.blazorMarkdownEditor.getMarkdown(editorId);
       editorHost.style.display = "none";
       markdownView.style.display = "block";
       markdownView.focus();
@@ -262,17 +262,17 @@ Type \`/\` at the start of a line to open the **slash command menu**!
 
     function switchToLiveMode() {
       if (mode === "live") return;
-      window.blazerMarkdownEditor.setMarkdown(editorId, markdownView.value);
+      window.blazorMarkdownEditor.setMarkdown(editorId, markdownView.value);
       markdownView.style.display = "none";
       editorHost.style.display = "block";
-      window.blazerMarkdownEditor.focus(editorId);
+      window.blazorMarkdownEditor.focus(editorId);
       mode = "live";
       setStatus("Live mode enabled.");
     }
 
     async function copyMarkdown() {
       const text = mode === "live"
-        ? window.blazerMarkdownEditor.getMarkdown(editorId)
+        ? window.blazorMarkdownEditor.getMarkdown(editorId)
         : markdownView.value;
 
       try {
@@ -284,7 +284,7 @@ Type \`/\` at the start of a line to open the **slash command menu**!
     }
 
     function resetContent() {
-      window.blazerMarkdownEditor.setMarkdown(editorId, initialMarkdown);
+      window.blazorMarkdownEditor.setMarkdown(editorId, initialMarkdown);
       if (mode === "code") {
         markdownView.value = initialMarkdown;
       }
@@ -297,7 +297,7 @@ Type \`/\` at the start of a line to open the **slash command menu**!
     document.getElementById("btnReset").addEventListener("click", resetContent);
 
     window.addEventListener("beforeunload", () => {
-      window.blazerMarkdownEditor.destroy(editorId);
+      window.blazorMarkdownEditor.destroy(editorId);
     });
   </script>
 </body>
