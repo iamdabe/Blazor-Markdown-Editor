@@ -25,7 +25,7 @@ Build output includes license headers automatically.
 This project uses calendar versioning:
 
 - Format: `YYYY.MINOR.PATCH`
-- Current: `2026.2.1`
+- Current: `2026.2.2`
 
 ## Blazor / MudBlazor consumption
 

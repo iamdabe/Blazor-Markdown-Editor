@@ -7,6 +7,7 @@ Just want to see it in action: Check the demo [https://iamdabe.github.io/Blazor-
 
 ## Contents
 - **[Features](#features)**
+- **[Why](#why)**
 - **[Preview](#preview)**
 - **[Install](#install)**
 - **[Third-Party](#third-party)**
@@ -19,6 +20,11 @@ Additional docs:
 * Markdown-first authoring with ProseMirror document model and serializer
 * Blazor-focused JSInterop API: `create`, `setMarkdown`, `getMarkdown`, `focus`, `destroy`
 * Productive editing features: slash menu, table controls, link toolbar, and keyboard shortcuts
+
+## Why
+Most Markdown editors rely on a split view which force users to constantly switch between writing and previewing. This project was created to simplify this and provide similar to experience to outline or DocMost i.e. edit text without getting markdown syntax everywhere. My usecase was for `normal` users who might not like seeing the syntax and would delete it thus removing the formatting. 
+
+Use the slash command menu or type markdown syntax and have it automatically convert to live formatting. For me, it's ideal for developers and creators who want a true WYSIWYG experience without giving up the flexibility and portability of Markdown.
 
 ## Preview
 
@@ -50,7 +56,7 @@ Additional docs:
    - `window.blazorMarkdownEditor.focus(...)`
    - `window.blazorMarkdownEditor.destroy(...)`
 
-Versioning uses a calendar schema: `YYYY.MINOR.PATCH` (current: `2026.2.1`).
+Versioning uses a calendar schema: `YYYY.MINOR.PATCH` (current: `2026.2.2`).
 
 ## Third-Party
 * markdown-it 14.1.0
