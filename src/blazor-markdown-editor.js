@@ -378,6 +378,35 @@ function compactLineBreak(state, dispatch) {
   return true;
 }
 
+function getActiveTableContext(state) {
+  const { $head } = state.selection;
+  let tableDepth = -1;
+  let rowDepth = -1;
+
+  for (let d = $head.depth; d > 0; d--) {
+    const name = $head.node(d).type.name;
+    if (rowDepth < 0 && name === "table_row") rowDepth = d;
+    if (name === "table") {
+      tableDepth = d;
+      break;
+    }
+  }
+
+  if (tableDepth < 0 || rowDepth < 0) return null;
+
+  return {
+    tableDepth,
+    rowDepth,
+    rowIndex: $head.index(tableDepth),
+  };
+}
+
+function addRowBeforeIfAllowed(state, dispatch) {
+  const tableContext = getActiveTableContext(state);
+  if (tableContext?.rowIndex === 0) return false;
+  return addRowBefore(state, dispatch);
+}
+
 // ── Inline Markdown Input Rules ──
 const inlineMarkdownRules = inputRules({ rules: [
   // **bold**
@@ -464,7 +493,16 @@ function tableToolbarPlugin() {
     return el;
   }
   const cmds = { addColumnBefore, addColumnAfter, deleteColumn,
-                 addRowBefore, addRowAfter, deleteRow, deleteTable };
+                 addRowBefore: addRowBeforeIfAllowed, addRowAfter, deleteRow, deleteTable };
+
+  function updateButtonStates(state) {
+    if (!toolbarEl) return;
+
+    toolbarEl.querySelectorAll("button[data-cmd]").forEach((btn) => {
+      const cmd = cmds[btn.dataset.cmd];
+      btn.disabled = cmd ? !cmd(state) : true;
+    });
+  }
 
   function positionForSelection(view) {
     if (!view.hasFocus()) { hideToolbar(); return; }
@@ -482,6 +520,7 @@ function tableToolbarPlugin() {
 
     if (!inTbl || !tblDom) { hideToolbar(); return; }
 
+  updateButtonStates(view.state);
     const r = tblDom.getBoundingClientRect();
     toolbarEl.style.display = "flex";
     toolbarEl.style.left = r.left + "px";
@@ -494,6 +533,7 @@ function tableToolbarPlugin() {
       toolbarEl.addEventListener("mousedown", e => {
         e.preventDefault();
         const btn = e.target.closest("button[data-cmd]");
+        if (btn?.disabled) return;
         if (btn) { const c = cmds[btn.dataset.cmd]; if (c) c(editorView.state, editorView.dispatch); }
       });
 

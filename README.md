@@ -56,7 +56,7 @@ Use the slash command menu or type markdown syntax and have it automatically con
    - `window.blazorMarkdownEditor.focus(...)`
    - `window.blazorMarkdownEditor.destroy(...)`
 
-Versioning uses a calendar schema: `YYYY.MINOR.PATCH` (current: `2026.2.2`).
+Versioning uses a calendar schema: `YYYY.MINOR.PATCH` (current: `2026.3.1`).
 
 ## Third-Party
 * markdown-it 14.1.0

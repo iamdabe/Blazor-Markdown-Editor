@@ -80,6 +80,15 @@
 .link-toolbar button:hover {
   background: #f0f0ff;
 }
+.table-toolbar button:disabled,
+.link-toolbar button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+.table-toolbar button:disabled:hover,
+.link-toolbar button:disabled:hover {
+  background: none;
+}
 .table-toolbar .sep {
   width: 1px;
   background: #e0e0e0;
